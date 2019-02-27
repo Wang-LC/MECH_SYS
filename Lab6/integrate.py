@@ -5,7 +5,7 @@ import math
 
 
 def func(x):
-    return x**2+x+1
+    return x**2-3
 
 
 def integrate(f, j, k, integral=100):  # Q1
@@ -74,7 +74,7 @@ def error_plot():  # Q3 plot the graph
     plt.legend()
     plt.xlabel('number of intervals or samples')
     plt.ylabel('Absolute Error')
-    plt.title('the convergence behavior of the two functions')
+    plt.title(' the convergence behavior of the two functions \n (MC function has some noise even with large samples)')
     plt.show()
 
 
@@ -83,6 +83,7 @@ def approximate_pi(n):  # Q4
 
 
 if __name__ == "__main__":
-    error_plot()
+    print(integrate(func, -3, 3, 1000))
+    print(integrate_mc(func, -3, 3, (-3, 6), 100000))
 
 
