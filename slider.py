@@ -26,13 +26,13 @@ class SliderDisplay(QWidget):
         layout.addWidget(self.slider)
 
     def value(self, ticks):
-        return self.lb2.setText(str(self.slider.value()/ticks))
+        self.lb2.setText(str(self.slider.value()/ticks))
 
 
 if __name__ == '__main__':
     app = QApplication([])
 
-    slider = SliderDisplay('foo', 0, 10)
+    slider = SliderDisplay('foo', 1, 10)
 
     slider.show()
 

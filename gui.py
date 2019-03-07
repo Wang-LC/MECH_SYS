@@ -1,56 +1,56 @@
 #!/usr/bin/env python3
 
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QLabel, QLCDNumber, QSlider
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QLabel, QGroupBox
 from slider import SliderDisplay
 
 
 class Interface(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
+        self.TimeBox = QGroupBox()
+        self.SysBox = QGroupBox()
         self.setWindowTitle('Spring-Mass-Damper Playground')
-
+        self.createSysBox()
+        self.createTimeBox()
         # A widget to hold everything
         widget = QWidget()
         self.setCentralWidget(widget)
         # self.resize(1000, 800)
 
-        # main layout
-        layout = QVBoxLayout()
-        widget.setLayout(layout)
-
-        # layout
-        layout1 = QVBoxLayout()
-        widget.setLayout(layout1)
-        layout2 = QVBoxLayout()
-        widget.setLayout(layout2)
-
-        # label
-        label = QLabel('System parameters')
+        # set title label
+        label1 = QLabel('System parameters')
         label2 = QLabel('Simulation parameters')
-
-        # sliders
-        mass_slider = SliderDisplay('Mass', 0, 10)
-        spring_slider = SliderDisplay('Spring', 0, 10)
-        damper_slider = SliderDisplay('Damper', 0, 10)
-        time_slider = SliderDisplay('Time(s)', 0, 100)
 
         # A button
         quit_button = QPushButton('Quit')
         quit_button.clicked.connect(app.exit)
+        # main layout
+        mainLayout = QVBoxLayout()
+        mainLayout.addWidget(label1)
+        mainLayout.addWidget(self.SysBox)
+        mainLayout.addWidget(label2)
+        mainLayout.addWidget(self.TimeBox)
+        mainLayout.addWidget(quit_button)
+        widget.setLayout(mainLayout)
 
-        # You probably want to add in other interface elements here
+    def createSysBox(self):
+        layout = QVBoxLayout()
+        mass_slider = SliderDisplay('Mass', 0, 10)
+        spring_slider = SliderDisplay('Spring', 0, 10)
+        damper_slider = SliderDisplay('Damper', 0, 10)
+        layout.addWidget(mass_slider)
+        layout.addWidget(spring_slider)
+        layout.addWidget(damper_slider)
+        self.SysBox.setLayout(layout)
 
-        # Add things to the layout
-        layout.addStretch()
-        layout.addWidget(label)
-        layout1.addWidget(mass_slider)
-        layout1.addWidget(spring_slider)
-        layout1.addWidget(damper_slider)
-        layout.addLayout(layout1)
-        layout.addWidget(quit_button)
-
-        # Add other widgets to the layout here.  Possibly other layouts.
+    def createTimeBox(self):
+        layout = QVBoxLayout()
+        time_slider = SliderDisplay('Time (s)', 0, 100)
+        step_slider = SliderDisplay('Time step (s)', 0.001, 0.1)
+        layout.addWidget(time_slider)
+        layout.addWidget(step_slider)
+        self.TimeBox.setLayout(layout)
 
 
 if __name__ == '__main__':
