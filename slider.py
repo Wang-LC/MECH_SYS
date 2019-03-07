@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-from PyQt5.QtWidgets import QApplication, QWidget, QSlider, QLabel, QHBoxLayout,QLCDNumber
+from PyQt5.QtWidgets import QApplication, QWidget, QSlider, QLabel, QHBoxLayout
 from PyQt5 import QtCore
 
 
@@ -13,8 +13,8 @@ class SliderDisplay(QWidget):
 
         # A slider
         self.slider = QSlider(QtCore.Qt.Horizontal, self)
+        self.slider.setRange(low * ticks, high * ticks)
         self.slider.valueChanged.connect(lambda: self.value(ticks))
-        self.slider.setRange(low*ticks, high*ticks)
 
         # A label
         self.lb = QLabel('%s: ' % name)
@@ -32,7 +32,7 @@ class SliderDisplay(QWidget):
 if __name__ == '__main__':
     app = QApplication([])
 
-    slider = SliderDisplay('foo', 1, 10)
+    slider = SliderDisplay('foo', 0.001, 0.01)
 
     slider.show()
 
