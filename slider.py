@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 
-from PyQt5.QtWidgets import QApplication, QWidget, QSlider, QLabel, QHBoxLayout
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QWidget, QSlider, QLabel, QHBoxLayout,QLCDNumber
+from PyQt5 import QtCore
 
 
 class SliderDisplay(QWidget):
@@ -11,17 +11,28 @@ class SliderDisplay(QWidget):
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        # Your code goes in here
+        # A slider
+        self.slider = QSlider(QtCore.Qt.Horizontal, self)
+        self.slider.valueChanged.connect(lambda: self.value(ticks))
+        self.slider.setRange(low*ticks, high*ticks)
 
-    def value(self):
-        """Return the current value of the slider"""
-        return 0
+        # A label
+        self.lb = QLabel('%s: ' % name)
+        self.lb2 = QLabel('0.000', self)
+
+        # Add things to the layout
+        layout.addWidget(self.lb)
+        layout.addWidget(self.lb2)
+        layout.addWidget(self.slider)
+
+    def value(self, ticks):
+        return self.lb2.setText(str(self.slider.value()/ticks))
 
 
 if __name__ == '__main__':
     app = QApplication([])
 
-    slider = SliderDisplay('foo', 0, 1)
+    slider = SliderDisplay('foo', 0, 10)
 
     slider.show()
 
