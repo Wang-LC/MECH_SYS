@@ -14,7 +14,7 @@ class SliderDisplay(QWidget):
         # A slider
         self.slider = QSlider(QtCore.Qt.Horizontal, self)
         self.slider.setRange(low * ticks, high * ticks)
-        self.slider.valueChanged.connect(lambda: self.value(ticks))
+        self.slider.valueChanged.connect(lambda: self.lb2.setText(str(self.value()/ticks)))
 
         # A label
         self.lb = QLabel('%s: ' % name)
@@ -25,8 +25,8 @@ class SliderDisplay(QWidget):
         layout.addWidget(self.lb2)
         layout.addWidget(self.slider)
 
-    def value(self, ticks):
-        self.lb2.setText(str(self.slider.value()/ticks))
+    def value(self):
+        return self.slider.value()
 
 
 if __name__ == '__main__':

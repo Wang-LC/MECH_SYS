@@ -3,6 +3,18 @@
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QLabel, QGroupBox, QHBoxLayout
 from slider import SliderDisplay
+from random import random
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+
+
+def pprint(m, s, d, t, ts):
+    print('Mass: %s' % m)
+    print('Spring: %s' % s)
+    print('Damper: %s' % d)
+    print('Time(s): %s' % t)
+    print('Time Step: %s' % ts)
+    print('-'*30)
 
 
 class Interface(QMainWindow):
@@ -11,12 +23,30 @@ class Interface(QMainWindow):
         self.TimeBox = QGroupBox()
         self.SysBox = QGroupBox()
         self.setWindowTitle('Spring-Mass-Damper Playground')
-        self.createSysBox()
-        self.createTimeBox()
         # A widget to hold everything
         widget = QWidget()
         self.setCentralWidget(widget)
-        self.resize(500, 400)
+        self.resize(1500, 1000)
+
+        # create System Box
+        sys_layout = QVBoxLayout()
+        self.mass_slider = SliderDisplay('Mass', 0, 10)
+        self.spring_slider = SliderDisplay('Spring', 0, 10)
+        self.damper_slider = SliderDisplay('Damper', 0, 10)
+        # add things to layout
+        sys_layout.addWidget(self.mass_slider)
+        sys_layout.addWidget(self.spring_slider)
+        sys_layout.addWidget(self.damper_slider)
+        self.SysBox.setLayout(sys_layout)
+
+        # creat Time Box
+        layout = QVBoxLayout()
+        self.time_slider = SliderDisplay('Time (s)', 0, 100)
+        self.step_slider = SliderDisplay('Time step (s)', 0.001, 0.1)
+        # add things to layout
+        layout.addWidget(self.time_slider)
+        layout.addWidget(self.step_slider)
+        self.TimeBox.setLayout(layout)
 
         # set title label
         label1 = QLabel('System parameters')
@@ -24,48 +54,63 @@ class Interface(QMainWindow):
 
         # simulate button
         ss_button = QPushButton('Simulate\nSystem')
+        ss_button.clicked.connect(
+            lambda : pprint(self.mass_slider.value() / 1000, self.spring_slider.value() / 1000,
+                            self.damper_slider.value() / 1000, self.time_slider.value() / 1000,
+                            self.step_slider.value() / 1000)
+        )
+        ss_button.clicked.connect(self.graph)
 
         # quit button
         quit_button = QPushButton('Quit')
         quit_button.clicked.connect(app.exit)
+
+        # The display for the graph
+        self.figure = Figure()
+        self.display = FigureCanvas(self.figure)
+        self.figure.clear()
+
         # main layout
         mainLayout = QHBoxLayout()
-        # sub layout
-        subLayout = QVBoxLayout()
-        # add things to layout
-        subLayout.addWidget(label1)
-        subLayout.addWidget(self.SysBox)
-        subLayout.addWidget(label2)
-        subLayout.addWidget(self.TimeBox)
-        subLayout.addWidget(ss_button)
-        subLayout.addWidget(quit_button)
-        widget.setLayout(subLayout)
-        mainLayout.addLayout(subLayout)
+        widget.setLayout(mainLayout)
+        # left layout
+        left_Layout = QVBoxLayout()
+        # add things to left layout
+        left_Layout.addWidget(label1)
+        left_Layout.addWidget(self.SysBox)
+        left_Layout.addStretch(1)
+        left_Layout.addWidget(label2)
+        left_Layout.addWidget(self.TimeBox)
+        left_Layout.addStretch(1)
+        left_Layout.addWidget(ss_button)
+        left_Layout.addStretch(6)
+        left_Layout.addWidget(quit_button)
+
+        # set main layout
+        mainLayout.addLayout(left_Layout, stretch=1)
+        mainLayout.addWidget(self.display, stretch=2)
         widget.setLayout(mainLayout)
 
-    def createSysBox(self):
-        layout = QVBoxLayout()
-        mass_slider = SliderDisplay('Mass', 0, 10)
-        spring_slider = SliderDisplay('Spring', 0, 10)
-        damper_slider = SliderDisplay('Damper', 0, 10)
-        # add things to layout
-        layout.addWidget(mass_slider)
-        layout.addWidget(spring_slider)
-        layout.addWidget(damper_slider)
-        self.SysBox.setLayout(layout)
+    def graph(self):
+        self.draw([random() for i in range(25)])
 
-    def createTimeBox(self):
-        layout = QVBoxLayout()
-        time_slider = SliderDisplay('Time (s)', 0, 100)
-        step_slider = SliderDisplay('Time step (s)', 0.001, 0.1)
-        # add things to layout
-        layout.addWidget(time_slider)
-        layout.addWidget(step_slider)
-        self.TimeBox.setLayout(layout)
+    def draw(self, data):
+        self.figure.clear()
+        k = self.spring_slider.value() / 1000
+        m = self.mass_slider.value() / 1000
+        c = self.damper_slider.value() / 1000
+        ts = self.step_slider.value() / 1000
+        ax = self.figure.add_subplot(111)
+        ax.plot(data)
+        ax.set_title('Spring-Mass-Damper System Behavior\n'
+                     'k = %s, m = %s, c = %s, dt = %s' % (k, m, c, ts)
+                     )
+        ax.set_xlabel('Times(s)')
+        ax.set_ylabel('Amplitude')
+        self.display.draw()
 
 
-
-if __name__ == '__main__':
+if __name__ == '__main__' :
     app = QApplication([])
 
     interface = Interface()
@@ -73,4 +118,3 @@ if __name__ == '__main__':
     interface.show()
 
     app.exec_()
-
