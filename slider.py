@@ -14,11 +14,12 @@ class SliderDisplay(QWidget):
         # A slider
         self.slider = QSlider(QtCore.Qt.Horizontal, self)
         self.slider.setRange(low * ticks, high * ticks)
-        self.slider.valueChanged.connect(lambda: self.lb2.setText(str(self.value()/ticks)))
+        self.slider.valueChanged.connect(lambda : self.lb2.setText(str(self.value()/ticks)))
 
         # A label
         self.lb = QLabel('%s: ' % name)
-        self.lb2 = QLabel('0.000', self)
+        v = self.value()/ticks
+        self.lb2 = QLabel('%.3f' % v)
 
         # Add things to the layout
         layout.addWidget(self.lb)

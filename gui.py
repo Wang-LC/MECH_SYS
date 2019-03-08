@@ -3,9 +3,9 @@
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QLabel, QGroupBox, QHBoxLayout
 from slider import SliderDisplay
-from random import random
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+from msd import MassSpringDamper
 
 
 def pprint(m, s, d, t, ts):
@@ -59,7 +59,7 @@ class Interface(QMainWindow):
                             self.damper_slider.value() / 1000, self.time_slider.value() / 1000,
                             self.step_slider.value() / 1000)
         )
-        ss_button.clicked.connect(self.graph)
+        ss_button.clicked.connect(self.draw)
 
         # quit button
         quit_button = QPushButton('Quit')
@@ -91,17 +91,24 @@ class Interface(QMainWindow):
         mainLayout.addWidget(self.display, stretch=2)
         widget.setLayout(mainLayout)
 
-    def graph(self):
-        self.draw([random() for i in range(25)])
+    # def graph(self):
+    #     self.draw([random() for i in range(25)])
 
-    def draw(self, data):
+    def draw(self):
         self.figure.clear()
         k = self.spring_slider.value() / 1000
         m = self.mass_slider.value() / 1000
         c = self.damper_slider.value() / 1000
+        time = self.time_slider.value() / 1000
         ts = self.step_slider.value() / 1000
         ax = self.figure.add_subplot(111)
-        ax.plot(data)
+        smd = MassSpringDamper(m, k, c, time, ts)
+        state, t = smd.simulate(-1, 0)
+        displacement = []
+
+        for s in state :
+            displacement.append(s[0])
+        ax.plot(t, displacement)
         ax.set_title('Spring-Mass-Damper System Behavior\n'
                      'k = %s, m = %s, c = %s, dt = %s' % (k, m, c, ts)
                      )
