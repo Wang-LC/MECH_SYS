@@ -22,7 +22,7 @@ class MassSpringDamper:
         return state,times
     
     # This function takes the current state [x, x_dot] and returns the
-    # next velocity and acceleration [x_dot and x_dot_dot].  The
+    # next velocity and acceleration [x_dot and x_do t_dot].  The
     # function is used by the scipy ode solver.
     def equation(self, state, t):
         # unpack the state vector
