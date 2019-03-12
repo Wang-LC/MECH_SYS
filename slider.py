@@ -14,6 +14,7 @@ class SliderDisplay(QWidget):
         # A slider
         self.slider = QSlider(QtCore.Qt.Horizontal, self)
         self.slider.setRange(low * ticks, high * ticks)
+        self.slider.setValue(low*ticks)
         self.slider.valueChanged.connect(lambda : self.lb2.setText(str(self.value()/ticks)))
 
         # A label
