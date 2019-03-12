@@ -38,8 +38,8 @@ class MassSpringDamper :
 
 
 if __name__ == '__main__' :
-    smd = MassSpringDamper(m=10.0, k=10.0, c=1.0, time=20, ts=0.01)
-    state, t = smd.simulate(0.0, 1.0)
+    smd = MassSpringDamper(m=10, k=10, c=0, time=20, ts=0.01)
+    state, t = smd.simulate(-1, 0.01)
 
     for s in state :
         print(s[0])
