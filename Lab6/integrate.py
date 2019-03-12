@@ -79,11 +79,11 @@ def error_plot():  # Q3 plot the graph
 
 
 def approximate_pi(n):  # Q4
-    return 4*integrate_mc(lambda x: math.sqrt(1-x**2), 0, 1, 0, 1, n)
+    return 4*integrate_mc(lambda x: math.sqrt(1-x**2), 0, 1, (0, 1), n)
 
 
 if __name__ == "__main__":
     print(integrate(func, -3, 3, 1000))
     print(integrate_mc(func, -3, 3, (-3, 6), 100000))
-
+    print(approximate_pi(100))
 
