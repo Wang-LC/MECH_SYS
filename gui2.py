@@ -43,7 +43,7 @@ class Interface(QMainWindow):
         # create behavior box
         BH_layout = QHBoxLayout()
         text_label = QLabel('Type:')
-        self.type = QLabel('None')
+        self.type = QLabel('')
         # add to layout
         BH_layout.addWidget(text_label)
         BH_layout.addWidget(self.type)
@@ -151,7 +151,7 @@ class Interface(QMainWindow):
         elif self.z == 1:
             self.type.setText('Critically damped')
         else:
-            self.type.setText('wrong parameters set up')
+            self.type.setText('Wrong parameters set up')
 
 
 if __name__ == '__main__' :
