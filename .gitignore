@@ -24,3 +24,4 @@ __pycache__/sorted.cpython-37.pyc
 __pycache__/volumes.cpython-37.pyc
 __pycache__/words.cpython-37.pyc
 *.pyc
+*.zip
