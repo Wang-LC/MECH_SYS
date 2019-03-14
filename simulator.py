@@ -1,21 +1,57 @@
-import subprocess
+#!/usr/bin/python3
+
+import os
+import re
+import numpy as np
+import scipy.optimize as opt
 
 
-class Simulator:
-    def __init__(self, instance):
+class Simulator :
+    def __init__(self, instance) :
         self.ins = instance
 
-    def evaluate(self, path):
-        with open('C:/Users/wlc-6/Downloads/waypoints', 'w') as f:
-            for i in path:
-                f.write(str(i).replace('(', '').replace(')', '').replace(',', '')+'\n')
+    def evaluate(self, path) :
+        with open('waypoints', 'w') as f :
+            for i in path :
+                f.write(str(i).replace('(', '').replace(')', '').replace(',', '') + '\n')
+
         cmd = 'simulator waypoints %s' % (str(self.ins))
-        p = subprocess.Popen(cmd, shell=True, cwd='C:/Users/wlc-6/Downloads')
-        # cwd = 'file path'
-        return p
+        p = os.popen(cmd)
+        data = p.readlines()[1]
+        return re.findall(r'\d+\.?\d*', data)[0]
 
 
-if __name__ == '__main__':
-    w = [(-10, -10), (0, 2), (10, 10)]
-    s = Simulator(10)
-    print(s.evaluate(w))
+def find_better() :
+    simulate = Simulator(10)
+    # n = 150.0
+    # for i in np.linspace(0, 20, 21):
+    #     for j in np.linspace(0, 20, 21):
+    #         path = [(-10, -10), (-10 + i, 9), (10, 10)]
+    #         if float(simulate.evaluate(path)) < float(n):
+    #             n = simulate.evaluate(path)
+    #             x = -10 + i
+    #             y = -10 + j
+    # x = [-10, 10]
+    # y = [-10, 10]
+    x_better = opt.fminbound(lambda x1 : func(x1, -1), -10, 10)
+    y_better = opt.fminbound(lambda y1 : func(x_better, y1), -10, 10)
+
+    with open('better_waypoints', 'w') as f :
+        f.write('-10 -10\n%s %s\n10 10' % (x_better, y_better))
+    print(simulate.evaluate([(-10, -10), (x_better, y_better), (10, 10)]))
+
+
+def func(x_value, y_value):
+    simulate = Simulator(10)
+    # for i in range(len(x_value)):
+    #     for j in range(len(y_value)):
+    w = [(-10, -10), (x_value, y_value), (10, 10)]
+    return float(simulate.evaluate(w))
+
+
+if __name__ == '__main__' :
+    # w = [(-10, -10), (-10, 2), (10, 10)]
+    # s = Simulator(10)
+    # print(s.evaluate(w))
+    # print(func([-10],[2]))
+    find_better()
