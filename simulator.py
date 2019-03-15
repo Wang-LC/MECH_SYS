@@ -3,12 +3,11 @@
 import os
 import re
 import numpy as np
-import scipy.optimize as opt
 import sys
 
 
-class Simulator :
-    def __init__(self, instance) :
+class Simulator:
+    def __init__(self, instance):
         self.ins = instance
 
     def evaluate(self, path) :
@@ -22,36 +21,24 @@ class Simulator :
         return float(re.findall(r'\d+\.?\d*', data)[0])
 
 
-def find_better(ins) :
+def find_better(ins, calls):
     simulate = Simulator(ins)
-    n = 150.0
-    for i in np.linspace(0, 20, 21):
-        for j in np.linspace(0, 20, 21):
-            path = [(-10, -10), (-10 + i, -10 + j), (10, 10)]
-            if simulate.evaluate(path) < float(n):
-                n = simulate.evaluate(path)
-                x_better = -10 + i
-                y_better = -10 + j
-    # x = [-10, 10]
-    # y = [-10, 10]
-    # x_better = opt.fminbound(lambda x1 : func(x1, -1), -10, 10)
-    # y_better = opt.fminbound(lambda y1 : func(x_better, y1), -10, 10)
+    cost = []
+    x = np.random.uniform(-10, 10, calls)
+    y = np.random.uniform(-10, 10, calls)
+    for i in range(calls):
+            path = [(-10, -10), (x[i], y[i]), (10, 10)]
+            cost.append(simulate.evaluate(path))
+    n = cost.index(min(cost))
+    x_better = x[n]
+    y_better = y[n]
 
-    with open('better_waypoints', 'w') as f :
+    with open('better_waypoints', 'w') as f:
         f.write('-10 -10\n%s %s\n10 10' % (x_better, y_better))
-    # print(simulate.evaluate([(-10, -10), (x_better, y_better), (10, 10)]))
-
-
-# def func(x_value, y_value):
-#     simulate = Simulator(10)
-#     # for i in range(len(x_value)):
-#     #     for j in range(len(y_value)):
-#     w = [(-10, -10), (x_value, y_value), (10, 10)]
-#     return float(simulate.evaluate(w))
 
 
 if __name__ == '__main__' :
     # w = [(-10, -10), (-10, 2), (10, 10)]
     # s = Simulator(10)
     # print(s.evaluate(w))
-    find_better(10)
+    find_better(sys.argv[1], 60)
